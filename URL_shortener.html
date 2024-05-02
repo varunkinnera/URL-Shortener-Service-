@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener Service</title>
+</head>
+<body>
+  <h1>URL Shortener Service</h1>
+  <label for="long-url">Enter Long URL:</label>
+  <input type="text" id="long-url">
+  <button onclick="shortenURL()">Shorten URL</button>
+  
+  <script>
+    // JavaScript code for URL Shortener
+    class URLShortener {
+      constructor() {
+        this.urlMap = new Map();
+        this.chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        this.base = this.chars.length;
+        this.shortLength = 6; // Customize the length if needed
+      }
+
+      encodeURL(longURL) {
+        let identifier = this.generateIdentifier();
+        this.urlMap.set(identifier, longURL);
+        return this.convertToShortURL(identifier);
+      }
+
+      decodeURL(shortURL) {
+        let identifier = this.extractIdentifier(shortURL);
+        let longURL = this.urlMap.get(identifier);
+        if (longURL) {
+          window.location.href = longURL;
+        } else {
+          console.error("Invalid short URL");
+        }
+      }
+
+      generateIdentifier() {
+        let identifier = '';
+        for (let i = 0; i < this.shortLength; i++) {
+          let randomIndex = Math.floor(Math.random() * this.base);
+          identifier += this.chars[randomIndex];
+        }
+        return identifier;
+      }
+
+      convertToShortURL(identifier) {
+        return `https://short.url/${identifier}`;
+      }
+
+      extractIdentifier(shortURL) {
+        return shortURL.substring(shortURL.lastIndexOf('/') + 1);
+      }
+    }
+
+    // Function to handle URL shortening
+    function shortenURL() {
+      const longURLInput = document.getElementById('long-url');
+      const longURL = longURLInput.value;
+      
+      const shortener = new URLShortener();
+      const shortURL = shortener.encodeURL(longURL);
+      alert("Shortened URL: " + shortURL);
+    }
+  </script>
+</body>
+</html>
+
